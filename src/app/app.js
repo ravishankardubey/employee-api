@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors')
 const SERVER_CONFIG = require('./config/server.config');
 const EMPLOYEE_ROUTES = require('./routes/employee.routes');
 const DEPARTMENT_ROUTES = require('./routes/department.routes');
@@ -12,6 +13,12 @@ app.use(bodyParser.urlencoded({
 }));
 
 CONNECT_MONGO();
+
+/**
+ * Un comment below lines to Allow CORS in local server
+ */
+// app.options('*', cors())
+// app.use(cors())
 
 app.use('/employee', EMPLOYEE_ROUTES);
 app.use('/department', DEPARTMENT_ROUTES);
