@@ -23,6 +23,13 @@ exports.getDepartment = async (departmentId) => {
 
 exports.addDepartment = async (departmentDetails) => {
     try {
+        const maxId = await DEPARTMENT_MODEL.find({}, {
+            "id": 1,
+            "_id": 0
+        }).sort({
+            id: -1
+        }).limit(1);
+        departmentDetails['id'] = maxId[0]['id'] + 1;
         const deptObj = new DEPARTMENT_MODEL(departmentDetails);
         const department = await deptObj.save();
         return department;
@@ -45,16 +52,21 @@ exports.updateDepartment = async (departmentDetails) => {
 }
 
 exports.deleteDepartments = async (departmentIds) => {
-    // check for Department dependency with employees before deleting
-    // try {
-    //     const department = await DEPARTMENT_MODEL.deleteMany({
-    //         "id": {
-    //             $in: departmentIds
-    //         }
-    //     })
-    //     return department;
-    // } catch (e) {
-    //     throw Error('Error while deleting department(s) : [' + e.errmsg + ' ]');
-    // }
-    throw Error('Not implemented yet');
+    try {
+        const employeesOfDept = await EMPLOYEE_MODEL.find().distinct("departmentId");
+        const departmentsWithActiveEmployees = departmentIds.filter(id => employeesOfDept.includes(id));
+        if (departmentsWithActiveEmployees.length) {
+            throw Error('DeparmentId(s) ' + departmentsWithActiveEmployees.join(', ') + ' have active employees');
+        } else {
+            const department = await DEPARTMENT_MODEL.deleteMany({
+                "id": {
+                    $in: departmentIds
+                }
+            })
+            return department;
+        }
+
+    } catch (e) {
+        throw Error('Error while deleting department(s) : [ ' + e.message || e.errmsg + ' ]');
+    }
 }

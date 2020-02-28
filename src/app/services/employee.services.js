@@ -30,6 +30,14 @@ exports.getEmployee = async (employeeId) => {
 
 exports.addEmployee = async (empoyeeDetails) => {
     try {
+        const maxId = await EMPLOYEE_MODEL.find({}, {
+            "id": 1,
+            "_id": 0
+        }).sort({
+            id: -1
+        }).limit(1);
+        empoyeeDetails['id'] = maxId[0]['id'] + 1;
+
         const empObj = new EMPLOYEE_MODEL(empoyeeDetails);
         const employee = await empObj.save();
         return employee;
