@@ -17,8 +17,8 @@ CONNECT_MONGO();
 /**
  * Un comment below lines to Allow CORS in local server
  */
-// app.options('*', cors())
-// app.use(cors())
+app.options('*', cors())
+app.use(cors())
 
 app.use('/employee', EMPLOYEE_ROUTES);
 app.use('/department', DEPARTMENT_ROUTES);

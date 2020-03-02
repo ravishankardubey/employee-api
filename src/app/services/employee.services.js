@@ -13,7 +13,7 @@ exports.getAllEmployees = async () => {
         }]);
         return employees;
     } catch (e) {
-        throw Error('Error while fetching employees : [' + e.errmsg + ' ]');
+        throw Error('Error while fetching employees : ' + e.errmsg);
     }
 }
 
@@ -24,7 +24,7 @@ exports.getEmployee = async (employeeId) => {
         });
         return employee;
     } catch (e) {
-        throw Error('Error while fetching employee : [' + e.errmsg + ' ]');
+        throw Error('Error while fetching employee : ' + e.errmsg);
     }
 }
 
@@ -36,13 +36,13 @@ exports.addEmployee = async (empoyeeDetails) => {
         }).sort({
             id: -1
         }).limit(1);
-        empoyeeDetails['id'] = maxId[0]['id'] + 1;
+        empoyeeDetails['id'] = maxId.length ? (maxId[0]['id'] + 1) : 100;
 
         const empObj = new EMPLOYEE_MODEL(empoyeeDetails);
         const employee = await empObj.save();
         return employee;
     } catch (e) {
-        throw Error('Error while adding new employee : [' + e.errmsg + ' ]');
+        throw Error('Error while adding new employee : ' + e.errmsg);
     }
 }
 
@@ -55,7 +55,7 @@ exports.updateEmployee = async (empoyeeDetails) => {
         })
         return employee;
     } catch (e) {
-        throw Error('Error while updating employee : [' + e.errmsg + ' ]');
+        throw Error('Error while updating employee : ' + e.errmsg);
     }
 }
 
@@ -68,6 +68,6 @@ exports.deleteEmployees = async (employeeIds) => {
         })
         return employee;
     } catch (e) {
-        throw Error('Error while deleting employee(s) : [' + e.errmsg + ' ]');
+        throw Error('Error while deleting employee(s) : ' + e.errmsg);
     }
 }

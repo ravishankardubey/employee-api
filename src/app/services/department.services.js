@@ -6,7 +6,7 @@ exports.getAllDepartments = async () => {
         const departments = await DEPARTMENT_MODEL.find({});
         return departments;
     } catch (e) {
-        throw Error('Error while fetching departments : [' + e.errmsg + ' ]');
+        throw Error('Error while fetching departments : ' + e.errmsg);
     }
 }
 
@@ -17,7 +17,7 @@ exports.getDepartment = async (departmentId) => {
         });
         return department;
     } catch (e) {
-        throw Error('Error while fetching department : [' + e.errmsg + ' ]');
+        throw Error('Error while fetching department : ' + e.errmsg);
     }
 }
 
@@ -29,12 +29,12 @@ exports.addDepartment = async (departmentDetails) => {
         }).sort({
             id: -1
         }).limit(1);
-        departmentDetails['id'] = maxId[0]['id'] + 1;
+        departmentDetails['id'] = maxId.length ? (maxId[0]['id'] + 1) : 100;
         const deptObj = new DEPARTMENT_MODEL(departmentDetails);
         const department = await deptObj.save();
         return department;
     } catch (e) {
-        throw Error('Error while adding new department : [' + e.errmsg + ' ]');
+        throw Error('Error while adding new department : ' + e.errmsg);
     }
 }
 
@@ -47,7 +47,7 @@ exports.updateDepartment = async (departmentDetails) => {
         })
         return department;
     } catch (e) {
-        throw Error('Error while updating department : [' + e.errmsg + ' ]');
+        throw Error('Error while updating department : ' + e.errmsg);
     }
 }
 
@@ -67,6 +67,6 @@ exports.deleteDepartments = async (departmentIds) => {
         }
 
     } catch (e) {
-        throw Error('Error while deleting department(s) : [ ' + e.message || e.errmsg + ' ]');
+        throw Error('Error while deleting department(s) : ' + e.message || e.errmsg);
     }
 }
